@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <script>
+    async function loginUser(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const pass1 = document.getElementById('pass1').value;
+        const email = document.getElementById('email').value;
+
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, pass1, email })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            window.location.href = "/";
+        } else {
+            alert(data.error || "Login failed");
+        }
+    }
+    </script>
+</head>
+<body>
+    <h2>Login</h2>
+    <form onsubmit="loginUser(event)">
+        <div class="frosted transparent p-6 shadow-lg">
+            USERNAME: <input type="text" id="username" required>
+          </div>
+        
+        <label>Email: <input type="text" id="email" required></label><br>
+        <label>pass1: <input type="password" id="pass1" required></label><br>
+
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="/signup">Sign up</a></p>
+</body>
+</html>

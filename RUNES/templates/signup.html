@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="../static/tailwind.css" rel="stylesheet" />
+    <link href="../static/tailwind.js" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+    <style>
+      @font-face {
+  font-family: 'norse';
+  src: url('D:/Neerav/RUNES/static/fonts/norse.otf') format('opentype');
+}
+
+      body {
+        background: linear-gradient(135deg, rgba(75, 0, 130, 0.8), rgba(0, 0, 255, 0.5));
+        font-family: 'Quicksand', sans-serif;
+        background-attachment: fixed;
+      }
+      .frosted {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .frosted2 {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .frosted3{  
+        height: 15%;
+      }
+      .score {
+        animation: roll 0.25s ease-in;
+      }
+      .logo {
+        background-image: url('https://i.ibb.co/F1CK3wq/logo.png');
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        margin: 0 auto;
+      }
+      .customfont {
+        font-family: 'norse', sans-serif;
+      }
+      .quicksand {
+        font-family: 'Quicksand', sans-serif;
+      }
+      @keyframes roll {
+        0% {
+          transform: translateY(-7px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+    </style>
+
+
+
+    <script>
+    async function signupUser(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const pass1 = document.getElementById('pass1').value;
+        const email = document.getElementById('email').value;
+        console.warn(email);
+        console.warn(pass1);
+        console.warn(username);
+        if (!username || !pass1 || !email) {
+            alert("All fields are required!");
+            return;
+        }        
+        console.warn(email);
+        console.warn(pass1);
+        console.warn(username);
+        const res = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, pass1, email})
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert("Signup successful! Please log in.");
+            window.location.href = "/login";
+        } else {
+            alert(data.error || "Signup failed");
+        }
+    }
+    </script>
+
+
+
+
+
+
+
+</head>
+
+
+
+
+
+
+
+<body class="bg-cover bg-center h-screen" style="background-image: url('https://i.ibb.co/9mf6y34K/1111-Photoroom.png');">
+    <div class="flex h-screen">
+
+
+      <div class="flex-1 flex flex-col">
+        <!-- Navbar -->
+        <nav class="frosted2 bg-slate-700 shadow-lg w-full">
+          <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <button id="sidebar-btn" class="text-white md:hidden focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <button id="menu-btn" class="block md:hidden text-white focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <div id="menu" class="hidden md:flex space-x-6 items-center">
+          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
+          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
+          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
+          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
+            </div>
+          </div>
+        </nav>
+
+
+
+
+
+        <div >
+            <h2>Sign Up</h2>
+            <form onsubmit="signupUser(event)">
+                <label>Username: <input type="text" id="username" required></label><br>
+                <label>Email: <input type="text" id="email" required></label><br>
+                <label>passs: <input type="password" id="pass1" required></label><br>
+
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="/login">Login</a></p>
+        </div>
+
+
+
+
+
+
+      </div>
+    </div>
+
+
+
+
+ 
+</body>
+
+
+
+
+
+
+
+</html>
