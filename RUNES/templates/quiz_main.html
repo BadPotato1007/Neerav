@@ -10,7 +10,7 @@
     <style>
       @font-face {
   font-family: 'norse';
-  src: url('D:/Neerav/STUDYSTYNC/static/fonts/norse.otf') format('opentype');
+  src: url('/static/fonts/norse.otf') format('opentype');
 }
 
       body {
@@ -58,6 +58,20 @@
         }
       }
     </style>
+
+  <script>
+    document.getElementById("phy").addEventListener("click", function() {
+      window.location.href = "/quiz?subject=physics";  // Change this to your desired URL
+    });
+  </script>
+
+
+
+
+    <title>RUNES</title>
+    <link rel="icon" href="https://i.ibb.co/F1CK3wq/logo.png" type="image/x-icon">
+
+
   </head>
   <body class="bg-cover bg-center h-screen" style="background-image: url('https://i.ibb.co/9mf6y34K/1111-Photoroom.png');">
     <div class="flex h-screen">
@@ -65,9 +79,9 @@
       <aside id="sidebar" class="w-60 frosted2 bg-slate-700 border-4 border-solid shadow-lg h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed md:relative z-50">
         
 
-        <div class="grid grid-cols-5 p-1 p-3 frosted3 border-solid">
+        <div class="grid grid-cols-5 p-1 p-3 frosted3 border-solid border-b-2 w-full">
           <div class="logo col-span-2 p-3"></div>
-          <div class="text-3xl text-white align-middle col-span-3 pt-5 pl-5 customfont">R U N E S</div>
+          <div class="text-3xl text-white align-middle col-span-3 pt-5 pl-5 customfont ">R U N E S</div>
         </div>
 
 
@@ -77,10 +91,12 @@
 
 
         <nav class="mt-4">
-          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
+          <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
           <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
-          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
+          <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
           <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
+
+          <a href="/logout" class="block py-3 border-t-2 fixed w-full bottom-0 px-6 text-white hover:underline quicksand">logout</a>
         </nav>
       </aside>
 
@@ -99,9 +115,9 @@
               </svg>
             </button>
             <div id="menu" class="hidden md:flex space-x-6 items-center">
-          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
+          <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
           <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
-          <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
+          <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
           <a href="#" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
             </div>
           </div>
@@ -121,15 +137,15 @@
         </div>
          <div class="grid grid-cols-3 center p-6 gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-          <div class="frosted transparent p-6 shadow-lg">
+          <div class="frosted transparent p-6 shadow-lg" id="phy">
             <h2 class="text-2xl font-bold text-purple-300">Physics</h2>
             
           </div>
-          <div class="frosted transparent p-6 shadow-lg">
+          <div class="frosted transparent p-6 shadow-lg" id="chem">
             <h2 class="text-2xl font-bold text-purple-300">Chemistry</h2>
             
           </div>
-          <div class="frosted transparent p-6 shadow-lg">
+          <div class="frosted transparent p-6 shadow-lg" id="math">
             <h2 class="text-2xl font-bold text-purple-300">Mathematics</h2>
             
           </div>

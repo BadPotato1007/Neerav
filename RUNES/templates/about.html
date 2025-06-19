@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Runes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      @font-face {
+        font-family: 'norse';
+        src: url('/static/fonts/norse.otf') format('opentype');
+      }
+      body {
+        background: linear-gradient(135deg, rgba(75, 0, 130, 0.8), rgba(0, 0, 255, 0.5));
+        font-family: 'Quicksand', sans-serif;
+        background-attachment: fixed;
+        background-image: url('https://i.ibb.co/9mf6y34K/1111-Photoroom.png');
+        background-size: cover;
+        background-position: center;
+        color: white;
+      }
+      .frosted {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .frostednav {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .customfont {
+        font-family: 'norse', sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="w-full px-6 py-4 bg-transparent flex justify-between items-center frostednav fixed top-0 shadow-md z-50">
+      <div class="flex items-center space-x-4">
+        <img src="https://i.ibb.co/F1CK3wq/logo.png" alt="Runes Logo" class="w-12 h-12 shadow-md" />
+        <span class="text-3xl text-white customfont">R U N E S</span>
+      </div>
+    </nav>
+
+    <!-- About Content -->
+    <div class="pt-32 px-6 max-w-4xl mx-auto space-y-12">
+      <!-- About -->
+      <section class="frosted p-6">
+        <h2 class="text-2xl font-bold mb-2">About Runes</h2>
+        <p>Runes is a purpose-built JEE preparation platform created by three passionate individuals—A, B, and C. Our mission: help students harness the power of consistent practice and transparent feedback to achieve their academic goals.</p>
+      </section>
+
+      <!-- Vision -->
+      <section class="frosted p-6">
+        <h2 class="text-xl font-bold mb-2">🎯 Our Vision</h2>
+        <p>We believe the journey to JEE success is built on steady effort, clear insight, and honest performance tracking. Inspired by the enduring essence of knowledge, Runes empowers learners to visualize their growth and stay motivated throughout their preparation.</p>
+      </section>
+
+      <!-- Offer -->
+      <section class="frosted p-6">
+        <h2 class="text-xl font-bold mb-2">📚 What We Offer</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>Comprehensive JEE Question Bank:</strong> Curated Physics, Chemistry, and Math questions that simulate real exams.</li>
+          <li><strong>Personal Progress Dashboard:</strong> Track accuracy, chapter performance, and question attempts in one place.</li>
+          <li><strong>Real-Time Leaderboard:</strong> View your rank live and challenge yourself among peers.</li>
+        </ul>
+      </section>
+
+      <!-- Why Runes -->
+      <section class="frosted p-6">
+        <h2 class="text-xl font-bold mb-2">💡 Why “Runes”?</h2>
+        <p>Runes—a name rooted in our logo—is built on two runic symbols:</p>
+        <ul class="list-disc list-inside mb-2">
+          <li><strong>Jera:</strong> Rune of hope, cycles, and steady growth.</li>
+          <li><strong>Isa:</strong> Rune of focus, stillness, and unwavering will.</li>
+        </ul>
+        <p>Like ancient runes encoding timeless wisdom, our platform transforms every quiz into learning insight—revealing your strengths and sharpening your purpose.</p>
+      </section>
+
+      <!-- Getting Started -->
+      <section class="frosted p-6">
+        <h2 class="text-xl font-bold mb-2">🚀 Getting Started</h2>
+        <ol class="list-decimal list-inside space-y-2">
+          <li><strong>Create your Runes account</strong>—sign up and select your JEE subject focus.</li>
+          <li><strong>Choose chapter-wise quizzes</strong> tailored to your current level.</li>
+          <li><strong>Practice consistently</strong>—each quiz unlocks detailed performance insights.</li>
+          <li><strong>Track your progress</strong>—watch stats and leaderboards update live.</li>
+          <li><strong>Identify weak spots</strong>—use dashboard analytics to improve.</li>
+          <li><strong>Repeat, refine, succeed</strong>—keep quizzing, tracking, and growing every day.</li>
+        </ol>
+        <p class="mt-4 font-semibold">Runes transforms steady, focused practice into measurable achievement—empowering you to prepare smarter and excel.</p>
+      </section>
+    </div>
+  </body>
+</html>

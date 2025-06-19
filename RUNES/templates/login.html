@@ -34,11 +34,6 @@
         background: rgba(255, 255, 255, 0.1);
       }
 
-      .frostednav {
-        backdrop-filter: blur(70px);
-        background: rgba(255, 255, 255, 0.1);
-      }
-
       .customfont {
         font-family: 'norse', sans-serif;
       }
@@ -47,14 +42,14 @@
     async function loginUser(event) {
         event.preventDefault();
         const username = document.getElementById('username').value;
-        const pass1 = document.getElementById('pass1').value;
-        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
         const res = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, pass1, email })
+            body: JSON.stringify({ username, pass1: password, email: '' }) // email unused in login check
         });
+
         const data = await res.json();
         if (res.ok) {
             window.location.href = "/";
@@ -63,8 +58,8 @@
         }
     }
     </script>
-</head>
-<body class="flex flex-col items-center justify-center min-h-screen">
+  </head>
+  <body class="flex flex-col items-center justify-center min-h-screen">
     <!-- Navbar -->
     <nav class="w-full px-6 py-4 bg-transparent flex justify-between items-center frostednav fixed top-0 shadow-md">
       <div class="flex items-center space-x-4">
@@ -76,20 +71,20 @@
     <!-- Login Form -->
     <div class="mt-10 w-full max-w-md p-8 frosted text-white">
       <h2 class="text-2xl font-bold text-center mb-6">Login to your R U N E S account</h2>
-      <form method="POST" action="/login" class="space-y-6">
+      <form class="space-y-6" onsubmit="loginUser(event)">
         <div>
           <label class="block mb-1">Username</label>
-          <input type="text" name="username" required class="w-full p-2 rounded bg-white bg-opacity-10 backdrop-blur-sm text-white focus:outline-none" />
+          <input type="text" id="username" required class="w-full p-2 rounded bg-white bg-opacity-10 backdrop-blur-sm text-white focus:outline-none" />
         </div>
         <div>
           <label class="block mb-1">Password</label>
-          <input type="password" name="password" required class="w-full p-2 rounded bg-white bg-opacity-10 backdrop-blur-sm text-white focus:outline-none" />
+          <input type="password" id="password" required class="w-full p-2 rounded bg-white bg-opacity-10 backdrop-blur-sm text-white focus:outline-none" />
         </div>
         <button type="submit" class="w-full py-2 rounded bg-purple-600 hover:bg-purple-700 transition text-white font-bold">Login</button>
       </form>
       <p class="text-center mt-4">
         Don't have an account?
-        <a href="/register" class="text-purple-300 hover:underline">Register here</a>
+        <a href="/signup" class="text-purple-300 hover:underline">Register here</a>
       </p>
     </div>
   </body>
