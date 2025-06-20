@@ -133,23 +133,21 @@ def get_user_attempt_number(username, sub):
 
     column_name = f"{sub.lower()}_attempted"
     print(f"[DEBUG] Fetching attempt number for user '{username}' and subject '{sub}' using column '{column_name}'")
-    query = ("SHOW COLUMNS FROM userdata LIKE %s")
-    cursor.execute(query, (column_name,))
-    query = ("SELECT %s FROM userdata WHERE username = %s", (column_name, username,))
 
     try:
-        cursor.execute(query)
+        # Only one query now, to avoid unread result issues
+        cursor.execute(f"SELECT `{column_name}` FROM userdata WHERE username = %s", (username,))
         result = cursor.fetchone()
         attempt_number = result[column_name] if result and column_name in result else None
     except mysql.connector.Error as e:
         print("[ERROR] Database error while fetching attempt number:", e)
         attempt_number = None
-        print("[DB Error]:", e)
-        attempt_number = None
+    finally:
+        cursor.close()
+        connection.close()
 
-    cursor.close()
-    connection.close()
     return attempt_number
+
 
 def get_next_question(subject, current_attempt_number):
 
@@ -211,17 +209,9 @@ def next_question():
 
 
 
-
-
 @app.route('/leaderboard')
 def leaderboard():
-    # Connect to MySQL
-    conn = mysql.connector.connect(
-        host='192.168.100.82',
-        user='runes',       
-        password='root',    
-        database='runes'    
-    )
+    conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT username, correctq AS C, totalq AS T FROM userdata")
@@ -230,13 +220,14 @@ def leaderboard():
     if not users:
         return "No user data available."
 
-    C_max = max(user['C'] for user in users) or 1  
+    valid_C_values = [user['C'] for user in users if user['C'] is not None]
+    C_max = max(valid_C_values) if valid_C_values else 1
 
     for user in users:
-        C = user['C']
-        T = user['T']
+        C = user['C'] or 0
+        T = user['T'] or 0
         accuracy = C / T if T else 0
-        normalized_correct = C / C_max
+        normalized_correct = C / C_max if C_max else 0
         user['score'] = 50 * (accuracy + normalized_correct)
 
     users.sort(key=lambda x: x['score'], reverse=True)
@@ -244,7 +235,6 @@ def leaderboard():
     cursor.close()
     conn.close()
     return render_template('leaderboard.html', data=users)
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
