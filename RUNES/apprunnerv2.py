@@ -22,6 +22,12 @@ def home():
 def login_page():
     return render_template('login.html')
 
+@app.route('/contact', methods=['GET'])
+def contact():
+    return render_template('contact.html')
+
+
+
 @app.route('/about', methods=['GET'])
 def about():
     return render_template('about.html')
@@ -205,8 +211,6 @@ def next_question():
 
     question['question_number'] = attempt_number + 1  
     return jsonify({'status': 'success', 'data': question})
-
-
 
 
 @app.route('/leaderboard')

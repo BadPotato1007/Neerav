@@ -1,57 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Leaderboard | RUNES</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-  <style>
-    @font-face {
-      font-family: 'norse';
-      src: url('/static/fonts/norse.otf') format('opentype');
-    }
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      @font-face {
+  font-family: 'norse';
+  src: url('/static/fonts/norse.otf') format('opentype');
+}
 
-    body {
-      background: linear-gradient(135deg, rgba(75, 0, 130, 0.8), rgba(0, 0, 255, 0.5));
-      font-family: 'Quicksand', sans-serif;
-      background-image: url('https://i.ibb.co/9mf6y34K/1111-Photoroom.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
+      body {
+        background: linear-gradient(135deg, rgba(75, 0, 130, 0.8), rgba(0, 0, 255, 0.5));
+        font-family: 'Quicksand', sans-serif;
+        background-attachment: fixed;
 
-    .frosted {
-      backdrop-filter: blur(70px);
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+      }
+      .frosted {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .frosted2 {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .frosted3{  
+        height: 15%;
+      }
+      .score {
+        animation: roll 0.25s ease-in;
+      }
+      .logo {
+        background-image: url('https://i.ibb.co/F1CK3wq/logo.png');
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        margin: 0 auto;
+      }
+      .customfont {
+        font-family: 'norse', sans-serif;
+      }
+      .quicksand {
+        font-family: 'Quicksand', sans-serif;
+      }
+      @keyframes roll {
+        0% {
+          transform: translateY(-7px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-cover bg-center h-screen" style="background-image: url('https://i.ibb.co/9mf6y34K/1111-Photoroom.png');">
+    <div>
+      <!-- Sidebar -->
+      <aside id="sidebar" class="w-60 frosted2 bg-slate-700 border-4 border-solid shadow-lg h-screen fixed left-0 top-0 z-50">
+        
 
-    .frostednav {
-      backdrop-filter: blur(70px);
-      background: rgba(255, 255, 255, 0.1);
-    }
+        <div class="grid grid-cols-5 p-1 p-3 frosted3 border-solid border-b-2 w-full">
+          <div class="logo col-span-2 p-3"></div>
+          <div class="text-3xl text-white align-middle col-span-3 pt-5 pl-5 customfont ">R U N E S</div>
+        </div>
 
-    .customfont {
-      font-family: 'norse', sans-serif;
-    }
-  </style>
-</head>
-<body class="text-white">
 
-  <!-- Navbar -->
-  <nav class="w-full px-6 py-4 bg-transparent flex justify-between items-center frostednav fixed top-0 shadow-md z-10">
-    <div class="flex items-center space-x-4">
-      <img src="https://i.ibb.co/F1CK3wq/logo.png" alt="Runes Logo" class="w-12 h-12 shadow-md" />
-      <span class="text-3xl text-white customfont">R U N E S</span>
-    </div>
-  </nav>
 
-  <!-- Leaderboard Section -->
-  <div class="pt-24 max-w-4xl mx-auto px-4">
+
+
+
+
+        <nav class="mt-4">
+          <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
+          <a href="/about" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
+          <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
+          <a href="/leaderboard" class="block py-3 px-6 text-white hover:underline quicksand">Leaderboard</a>
+          <a href="/contact" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
+          
+
+          <a href="/logout" class="block py-3 border-t-2 fixed w-full bottom-0 px-6 text-white hover:underline quicksand">logout</a>
+        </nav>
+      </aside>
+
+      <div class="flex-1 flex flex-col" style="margin-left:15rem;">
+        <!-- Navbar -->
+        <nav class="frosted2 bg-slate-700 shadow-lg w-full fixed top-0 left-60 z-40" style="margin-left:0; width:calc(100% - 15rem);">
+          <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <button id="sidebar-btn" class="text-white md:hidden focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <button id="menu-btn" class="block md:hidden text-white focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <div id="menu" class="hidden md:flex space-x-6 items-center">
+          <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
+          <a href="/about" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
+          <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
+          <a href="/leaderboard" class="block py-3 px-6 text-white hover:underline quicksand">Leaderboard</a>
+          <a href="/contact" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
+          
+            </div>
+          </div>
+        </nav>
+
+      
+
+
+
+<!-- Leaderboard Section -->
+  <div class="pt-24 max-w  px-4">
     <div class="frosted p-6 shadow-lg">
       <h1 class="text-3xl font-bold text-center mb-6">🏆 Leaderboard</h1>
       <div class="overflow-x-auto rounded-lg">
@@ -77,5 +145,23 @@
     </div>
   </div>
 
-</body>
+
+
+
+
+
+
+
+
+    </div>
+
+
+  </body>
 </html>
+
+
+
+
+
+
+
