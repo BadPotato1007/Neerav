@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response
 import mysql.connector
+from flask import Flask, request, render_template, redirect, url_for
+from flask_mail import Mail, Message
+
 
 app = Flask(__name__)
 
@@ -11,11 +14,78 @@ db_config = {
     'database': 'runes'
 }
 
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'adicomp05@gmail.com'  # Sender email (must be a Gmail account)
+app.config['MAIL_PASSWORD'] = 'lmao'       # Use an App Password, not your actual password
+app.config['MAIL_DEFAULT_SENDER'] = 'adicomp05@gmail.com'
+mail = Mail(app)
+
+
+@app.route('/send_mail', methods=['GET', 'POST'])
+def send_mail():
+    if request.method == 'POST':
+        sender_name = request.form['name']
+        sender_email = request.form['email']
+        message_body = request.form['message']
+
+        msg = Message(
+            subject=f"[RUNES] Contact Form: {sender_name}",
+            recipients=['runes@gmail.com'],
+            body=f"Name: {sender_name}\nEmail: {sender_email}\n\nMessage:\n{message_body}"
+        )
+
+        try:
+            mail.send(msg)
+            return "Message sent successfully!"
+        except Exception as e:
+            return f"Failed to send email: {str(e)}"
+
+
+
+
+
+
+
 @app.route('/')
 def home():
     username = request.cookies.get('username')
     if username:
-        return render_template('index.html')
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+
+        # Fetch correctq, totalq, and subject attempts
+        cursor.execute("""
+            SELECT username, correctq AS C, totalq AS T, 
+                phy_attempted AS phy,
+                chem_attempted AS chem,
+                maths_attempted AS math
+            FROM userdata 
+            WHERE username = %s
+        """, (username,))
+        
+        userdata = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if not userdata:
+            return "User not found", 404
+
+        # Compute accuracy
+        correct = userdata.get('C', 0) or 0
+        total = userdata.get('T', 0) or 0
+        accuracy = correct / total if total else 0
+
+        # Add fields needed by template
+        userdata['totalq'] = total
+        userdata['acc'] = round(accuracy * 100, 2)  # in %
+        userdata['phy'] = userdata.get('phy', 0)
+        userdata['chem'] = userdata.get('chem', 0)
+        userdata['math'] = userdata.get('math', 0)
+        return render_template('index.html', username=username, userdata=userdata)
+    
     return redirect(url_for('signup_page'))
 
 @app.route('/login', methods=['GET'])
@@ -25,8 +95,6 @@ def login_page():
 @app.route('/contact', methods=['GET'])
 def contact():
     return render_template('contact.html')
-
-
 
 @app.route('/about', methods=['GET'])
 def about():
@@ -84,7 +152,30 @@ def trivia_start():
     username = request.cookies.get('username')
     if not username:
         return redirect(url_for('login_page'))
-    return render_template('quiz_main.html', username=username)
+
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT username, correctq AS C, totalq AS T FROM userdata WHERE username = %s", (username,))
+    userdata = cursor.fetchone()
+
+    if not userdata:
+        return "User not found", 404
+
+    # Compute accuracy and inject it into userdata
+    C = userdata['C'] or 0
+    T = userdata['T'] or 0
+    accuracy = C / T if T else 0
+    accuracy = round(accuracy * 100, 2)  
+    userdata['acc'] = accuracy
+
+    userdata['totalq'] = T
+
+    cursor.close()
+    conn.close()
+
+    return render_template('quiz_main.html', username=username, userdata=userdata)
+
 
 @app.route('/logout')
 def logout():
@@ -109,13 +200,12 @@ def profile():
         return jsonify({'username': user[0]})
     return jsonify({'error': 'User not found'}), 404
 
-
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
-    password = data.get('password')  # expects 'password', not 'pass1'
+    password = data.get('password')
 
     if not username or not email or not password:
         return jsonify({'error': 'Missing username, email, or password'}), 400
@@ -131,8 +221,6 @@ def register():
     except mysql.connector.IntegrityError:
         return jsonify({'error': 'Username already exists'}), 400
 
-
-
 def get_user_attempt_number(username, sub):
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor(dictionary=True)
@@ -141,7 +229,6 @@ def get_user_attempt_number(username, sub):
     print(f"[DEBUG] Fetching attempt number for user '{username}' and subject '{sub}' using column '{column_name}'")
 
     try:
-        # Only one query now, to avoid unread result issues
         cursor.execute(f"SELECT `{column_name}` FROM userdata WHERE username = %s", (username,))
         result = cursor.fetchone()
         attempt_number = result[column_name] if result and column_name in result else None
@@ -154,29 +241,17 @@ def get_user_attempt_number(username, sub):
 
     return attempt_number
 
-
 def get_next_question(subject, current_attempt_number):
-
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor(dictionary=True)
 
-    # Calculate next question number
     next_question_number = current_attempt_number + 1
-
-    # SQL query (parameters are passed separately to prevent injection)
-    query = ("SELECT * FROM questions WHERE sub = %s AND qno = %s")
-
-    # Debug logging
-    print(f"[DEBUG] Fetching question → subject='{subject}', qno={next_question_number}")
-    print("[DEBUG] Executing query:", query.strip())
-    print("[DEBUG] With values:", (subject, next_question_number))
+    query = "SELECT * FROM questions WHERE sub = %s AND qno = %s"
 
     try:
-        print("[DEBUG]", query, (subject, next_question_number,))
-        execute_query = cursor.execute(query, (subject, next_question_number,))
-        print("[DEBUG] Query executed successfully:", execute_query)
+        print(f"[DEBUG] Fetching question → subject='{subject}', qno={next_question_number}")
+        cursor.execute(query, (subject, next_question_number))
         question = cursor.fetchall()
-        print("[DEBUG] Fetched question:", question)
         return question
     except mysql.connector.Error as e:
         print("[ERROR] Database error:", e)
@@ -185,21 +260,16 @@ def get_next_question(subject, current_attempt_number):
         cursor.close()
         connection.close()
 
-
-# Route to fetch next question
 @app.route('/api/next-question', methods=['GET'])
 def next_question():
     sub = request.args.get('subject')
     username = request.cookies.get('username')
-    print(username)
-    print("sub:", sub)
-    print("Username from cookie or param:", username)
 
     if not sub or not username:
         return jsonify({
-    'status': 'error',
-    'message': f'Subject and username are required. Got subject={sub}, username={username}'}), 400
-
+            'status': 'error',
+            'message': f'Subject and username are required. Got subject={sub}, username={username}'
+        }), 400
 
     attempt_number = get_user_attempt_number(username, sub)
     if attempt_number is None:
@@ -209,9 +279,7 @@ def next_question():
     if not question:
         return jsonify({'status': 'error', 'message': 'No more questions available'}), 404
 
-    question['question_number'] = attempt_number + 1  
-    return jsonify({'status': 'success', 'data': question})
-
+    return jsonify({'status': 'success', 'data': question, 'question_number': attempt_number + 1})
 
 @app.route('/leaderboard')
 def leaderboard():

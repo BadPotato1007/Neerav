@@ -60,9 +60,9 @@
     </style>
 
   <script>
-    document.getElementById("phy").addEventListener("click", function() {
-      window.location.href = "/quiz?subject=physics";  // Change this to your desired URL
-    });
+    
+
+    
   </script>
 
 
@@ -130,25 +130,25 @@
          <div class="grid grid-cols-2 center p-6 gap-6 md:grid-cols-2 lg:grid-cols-2">
             <div class="frosted transparent p-6 shadow-lg">
             <h2 class="text-2xl font-bold text-purple-300">Questions solved</h2>
-            <p class="text-5xl font-extrabold text-purple-500 score">1234</p>
+            <p class="text-5xl font-extrabold text-purple-500 score">{{userdata.totalq}}</p>
           </div>
           <div class="frosted transparent p-6 shadow-lg">
             <h2 class="text-2xl font-bold text-purple-300">Accuracy</h2>
-            <p class="text-5xl font-extrabold text-purple-500 score">1234</p>
+            <p class="text-5xl font-extrabold text-purple-500 score">{{userdata.acc}}%</p>
           </div>
         </div>
          <div class="grid grid-cols-3 center p-6 gap-6 md:grid-cols-2 lg:grid-cols-3">
 
           <div class="frosted transparent p-6 shadow-lg" id="phy">
-            <h2 class="text-2xl font-bold text-purple-300">Physics</h2>
+            <a href="/trivia_start/physics" ><h2 class="text-2xl font-bold text-purple-300">Physics</h2></a>
             
           </div>
           <div class="frosted transparent p-6 shadow-lg" id="chem">
-            <h2 class="text-2xl font-bold text-purple-300">Chemistry</h2>
+            <a href="/trivia_start/Chemistry" ><h2 class="text-2xl font-bold text-purple-300">Chemistry</h2></a>
             
           </div>
           <div class="frosted transparent p-6 shadow-lg" id="math">
-            <h2 class="text-2xl font-bold text-purple-300">Mathematics</h2>
+            <a href="/trivia_start/Mathematics" ><h2 class="text-2xl font-bold text-purple-300">Mathematics</h2></a>
             
           </div>
          </div>
