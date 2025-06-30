@@ -61,7 +61,7 @@ def home():
             SELECT username, correctq AS C, totalq AS T, 
                 phy_attempted AS phy,
                 chem_attempted AS chem,
-                maths_attempted AS math
+                math_attempted AS math
             FROM userdata 
             WHERE username = %s
         """, (username,))
