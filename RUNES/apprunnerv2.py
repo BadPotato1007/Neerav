@@ -308,5 +308,11 @@ def leaderboard():
     conn.close()
     return render_template('leaderboard.html', data=users)
 
+@app.route('/trivia')
+def trivia():
+    subject = request.args.get('sub')
+    print(f"Subject received: {subject}")
+    return render_template('trivia.html', subject=subject)
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
