@@ -9,9 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <style>
       @font-face {
-        font-family: 'norse';
-        src: url('/static/fonts/norse.otf') format('opentype');
-      }
+  font-family: 'norse';
+  src: url('/static/fonts/norse.otf') format('opentype');
+}
 
       body {
         background: linear-gradient(135deg, rgba(75, 0, 130, 0.8), rgba(0, 0, 255, 0.5));
@@ -22,12 +22,6 @@
         backdrop-filter: blur(70px);
         background: rgba(255, 255, 255, 0.1);
         border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-      .frosted-bottom {
-        backdrop-filter: blur(70px);
-        background: rgba(33, 30, 107);
-       height: 10%;
         border: 1px solid rgba(255, 255, 255, 0.2);
       }
       .frosted2 {
@@ -43,13 +37,11 @@
       }
       .logo {
         background-image: url('https://i.ibb.co/F1CK3wq/logo.png');
-        background-size: contain;
-        background-repeat: no-repeat;
+        background-size: cover;
         width: 100%;
         height: 100%;
         border-radius: 50%;
         margin: 0 auto;
-        
       }
       .customfont {
         font-family: 'norse', sans-serif;
@@ -57,7 +49,6 @@
       .quicksand {
         font-family: 'Quicksand', sans-serif;
       }
-
       @keyframes roll {
         0% {
           transform: translateY(-7px);
@@ -72,6 +63,23 @@
     document.getElementById("phy").addEventListener("click", function() {
       window.location.href = "/quiz?subject=physics";  // Change this to your desired URL
     });
+
+  const params = new URLSearchParams(window.location.search);
+  const subject = params.get('sub');
+
+  fetch('/api/next-question?subject=' + subject)
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      console.log('Next question:', data.data);
+    } else {
+      console.error('Error:', data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Request failed:', error);
+  });
+
   </script>
 
 
@@ -88,15 +96,18 @@
 
       <div class="flex-1 flex flex-col">
         <!-- Navbar -->
-        <nav class="frosted2 bg-slate-700 shadow-lg w-full max-h-20">
+        <nav class="frosted2 bg-slate-700 shadow-lg w-full">
           
-          <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+          <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             
             <div class="grid grid-cols-5 p-1 frosted3">
               <div class="logo col-span-2 p-3"></div>
               <div class="text-3xl text-white align-middle col-span-3 pt-5 pl-5 customfont ">R U N E S</div>
             </div>
 
+
+
+            
           <div id="menu" class="hidden md:flex space-x-6 items-center">
           <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
           <a href="/about" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
@@ -109,33 +120,28 @@
 
 
         <!-- Content -->
-         <div class="grid grid-rows-2 center p-7 gap-5">
+         <div class="grid grid-rows-2 center p-6 gap-6">
             
-              <center>
-                <div class="text-3xl  font-semibold text-white text-center quicksand bg-opacity-50 bg-indigo-700  px-8 py-4 rounded-lg shadow-lg w-full max-w-5xl">
-                    Q. What is the capital of France?
-                </div>
-            </center>
+              <center><div class="text-3xl  font-semibold text-white text-center quicksand bg-indigo-700 bg-opacity-70 px-8 py-4 rounded-lg shadow-lg w-full max-w-5xl">
+                Q. What is the capital of France?
+              </div></center>
             </div>
             <div class="grid grid-cols-2 center p-6 gap-9 ">
               
-              <div class="frosted transparent p-6 shadow-lg" id="op1">
-                <a href="/trivia?submit=1&question=" ><h2 class="text-2xl font-bold text-purple-300">A. option</h2></a>
+              <div class="frosted transparent p-6 shadow-lg" id="phy">
+                <a href="/trivia?sub=physics" ><h2 class="text-2xl font-bold text-purple-300">A. option</h2></a>
               </div>
-              <div class="frosted transparent p-6 shadow-lg" id="op2">
+              <div class="frosted transparent p-6 shadow-lg" id="chem">
                 <a href="/trivia?sub=Chemistry" ><h2 class="text-2xl font-bold text-purple-300">B. option</h2></a>
               </div>
-              <div class="frosted transparent p-6 shadow-lg" id="op3">
+              <div class="frosted transparent p-6 shadow-lg" id="math">
                 <a href="/trivia?sub=Mathematics" ><h2 class="text-2xl font-bold text-purple-300">C. option</h2></a>
               </div>
-              <div class="frosted transparent p-6 shadow-lg" id="op4">
+              <div class="frosted transparent p-6 shadow-lg" id="math">
                 <a href="/trivia?sub=Mathematics" ><h2 class="text-2xl font-bold text-purple-300">D. option</h2></a>
               </div>
-              
+
             </div>
-            <div class=" bottom-0 fixed bg-purple-800 p-2 shadow-lg w-full h-15" id="submit">
-                <a href="/trivia?sub=Mathematics" ><h2 class="text-xl font-bold text-purple-300">button</h2></a>
-              </div>
         </div>
          
 

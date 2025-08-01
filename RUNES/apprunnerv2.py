@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response
 import mysql.connector
-from flask import Flask, request, render_template, redirect, url_for
 from flask_mail import Mail, Message
-
 
 app = Flask(__name__)
 
@@ -10,19 +8,17 @@ app = Flask(__name__)
 db_config = {
     'user': 'runes',
     'password': 'root',
-    'host': '192.168.100.82',
+    'host': '192.168.100.66',
     'database': 'runes'
 }
-
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'adicomp05@gmail.com'  # Sender email (must be a Gmail account)
-app.config['MAIL_PASSWORD'] = 'lmao'       # Use an App Password, not your actual password
+app.config['MAIL_PASSWORD'] = 'lmao'                 # Use an App Password, not your actual password
 app.config['MAIL_DEFAULT_SENDER'] = 'adicomp05@gmail.com'
 mail = Mail(app)
-
 
 @app.route('/send_mail', methods=['GET', 'POST'])
 def send_mail():
@@ -42,12 +38,6 @@ def send_mail():
             return "Message sent successfully!"
         except Exception as e:
             return f"Failed to send email: {str(e)}"
-
-
-
-
-
-
 
 @app.route('/')
 def home():
@@ -176,7 +166,6 @@ def trivia_start():
 
     return render_template('quiz_main.html', username=username, userdata=userdata)
 
-
 @app.route('/logout')
 def logout():
     resp = make_response(redirect(url_for('login_page')))
@@ -229,8 +218,10 @@ def get_user_attempt_number(username, sub):
     print(f"[DEBUG] Fetching attempt number for user '{username}' and subject '{sub}' using column '{column_name}'")
 
     try:
-        cursor.execute(f"SELECT `{column_name}` FROM userdata WHERE username = %s", (username,))
+        print("SELECT %s FROM userdata WHERE username = %s", (column_name, username))
+        cursor.execute("SELECT %s FROM userdata WHERE username = %s", (column_name, username))
         result = cursor.fetchone()
+        print(result)
         attempt_number = result[column_name] if result and column_name in result else None
     except mysql.connector.Error as e:
         print("[ERROR] Database error while fetching attempt number:", e)
@@ -241,24 +232,21 @@ def get_user_attempt_number(username, sub):
 
     return attempt_number
 
-def get_next_question(subject, current_attempt_number):
+def get_next_question(subject, username):
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor(dictionary=True)
-
+    cursor.execute("SELECT %s_attempted FROM userdata WHERE username = %s", (subject,username,))
+    result = cursor.fetchone()
+    current_attempt_number = result[f"{subject}_attempted"] if result and f"{subject}_attempted" in result else 0
     next_question_number = current_attempt_number + 1
-    query = "SELECT * FROM questions WHERE sub = %s AND qno = %s"
 
-    try:
-        print(f"[DEBUG] Fetching question → subject='{subject}', qno={next_question_number}")
-        cursor.execute(query, (subject, next_question_number))
-        question = cursor.fetchall()
-        return question
-    except mysql.connector.Error as e:
-        print("[ERROR] Database error:", e)
-        return None
-    finally:
-        cursor.close()
-        connection.close()
+    query = "SELECT * FROM questions WHERE sub = %s AND qno = %s"
+    cursor.execute(query, (subject, next_question_number))
+    question = cursor.fetchone()  # Not fetchall(), unless you expect multiple
+
+    cursor.close()
+    connection.close()
+    return question  # Return None if not found
 
 @app.route('/api/next-question', methods=['GET'])
 def next_question():
@@ -275,7 +263,7 @@ def next_question():
     if attempt_number is None:
         return jsonify({'status': 'error', 'message': f'Could not find attempt data for sub: {sub}'}), 404
 
-    question = get_next_question(sub, attempt_number)
+    question = get_next_question(sub, username)
     if not question:
         return jsonify({'status': 'error', 'message': 'No more questions available'}), 404
 
