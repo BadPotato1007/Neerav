@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response
+from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response, Response
+import json
 import mysql.connector
 from flask_mail import Mail, Message
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 db_config = {
     'user': 'runes',
     'password': 'root',
-    'host': '192.168.100.66',
+    'host': '192.168.100.133',
     'database': 'runes'
 }
 
@@ -218,14 +219,14 @@ def get_user_attempt_number(username, sub):
     print(f"[DEBUG] Fetching attempt number for user '{username}' and subject '{sub}' using column '{column_name}'")
 
     try:
-        print("SELECT %s FROM userdata WHERE username = %s", (column_name, username))
-        cursor.execute("SELECT %s FROM userdata WHERE username = %s", (column_name, username))
+        # Dynamically insert the column name, but parameterize the value
+        query = f"SELECT {column_name} FROM userdata WHERE username = %s"
+        cursor.execute(query, (username,))
         result = cursor.fetchone()
-        print(result)
-        attempt_number = result[column_name] if result and column_name in result else None
+        attempt_number = result[column_name] if result and column_name in result else 0
     except mysql.connector.Error as e:
         print("[ERROR] Database error while fetching attempt number:", e)
-        attempt_number = None
+        attempt_number = 0
     finally:
         cursor.close()
         connection.close()
@@ -235,18 +236,84 @@ def get_user_attempt_number(username, sub):
 def get_next_question(subject, username):
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT %s_attempted FROM userdata WHERE username = %s", (subject,username,))
-    result = cursor.fetchone()
-    current_attempt_number = result[f"{subject}_attempted"] if result and f"{subject}_attempted" in result else 0
-    next_question_number = current_attempt_number + 1
+    if subject == "phy":
+        cursor.execute("SELECT phy_attempted FROM userdata WHERE username = %s", (username,))
+        db_subject = "Physics"
+    elif subject == "math":
+        cursor.execute("SELECT math_attempted FROM userdata WHERE username = %s", (username,))
+        db_subject = "Maths"
+    elif subject == "chem":
+        cursor.execute("SELECT chem_attempted FROM userdata WHERE username = %s", (username,))
+        db_subject = "Chemistry"
+    else:
+        cursor.close()
+        connection.close()
+        return None  # Invalid subject
 
+    result = cursor.fetchone()
+    print("[DEBUG]  RESULT FROM THE DATABASE: ", result)
+
+    current_attempt_number = result.get(f"{subject}_attempted", 0) if result else 0
+    next_question_number = current_attempt_number + 1
+    print("[DEBUG] curr, next question numbers", current_attempt_number, next_question_number)
+
+    if next_question_number > 50:  # Replace 50 with your actual limit
+        print("[DEBUG] No more questions available for subject:", subject)
+        cursor.close()
+        connection.close()
+        return None
+
+    # Properly parameterized query
     query = "SELECT * FROM questions WHERE sub = %s AND qno = %s"
-    cursor.execute(query, (subject, next_question_number))
-    question = cursor.fetchone()  # Not fetchall(), unless you expect multiple
+    cursor.execute(query, (db_subject, next_question_number))
+
+    question = cursor.fetchone()
+    print("[DEBUG] Question fetched from DB:", question if question else "No question found")
 
     cursor.close()
     connection.close()
-    return question  # Return None if not found
+    return question
+
+
+
+
+@app.route("/api/submit-answer", methods=["POST"])
+def submit_answer():
+    data = request.get_json()
+    username = request.cookies.get('username')
+    if not username:
+        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
+
+    qno = data.get("qno")
+    subject = data.get("subject")
+    correct = data.get("correct")  # true/false/null
+
+    if not qno or not subject:
+        return jsonify({'status': 'error', 'message': 'Missing qno or subject'}), 400
+
+    subject_column = f"{subject}_attempted"
+    update_fields = ["totalq = totalq + 1"]
+
+    if correct is True:
+        update_fields.append("correctq = correctq + 1")
+    elif correct is False:
+        update_fields.append("wrongq = wrongq + 1")
+
+    update_fields.append(f"{subject_column} = {subject_column} + 1")
+
+    update_query = f"UPDATE userdata SET {', '.join(update_fields)} WHERE username = %s"
+
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute(update_query, (username,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({'status': 'success', 'message': 'Answer submitted and stats updated.'})
+    except mysql.connector.Error as e:
+        print("[ERROR] Failed to update userdata:", e)
+        return jsonify({'status': 'error', 'message': 'Database error'}), 500
 
 @app.route('/api/next-question', methods=['GET'])
 def next_question():
@@ -267,8 +334,14 @@ def next_question():
     if not question:
         return jsonify({'status': 'error', 'message': 'No more questions available'}), 404
 
-    return jsonify({'status': 'success', 'data': question, 'question_number': attempt_number + 1})
-
+    return Response(
+        json.dumps({
+            'status': 'success',
+            'data': question,
+            'question_number': int(attempt_number) + 1
+        }, ensure_ascii=False),
+        content_type='application/json; charset=utf-8'
+    )
 @app.route('/leaderboard')
 def leaderboard():
     conn = mysql.connector.connect(**db_config)
