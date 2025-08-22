@@ -23,168 +23,210 @@
       }
 
       .frosted {
-        backdrop-filter: blur(40px);
-        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 15px;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.4);
       }
+
+      .frostednav {
+        backdrop-filter: blur(70px);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
       .customfont {
         font-family: 'norse', sans-serif;
       }
+
+      /* Dropdown fix */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        margin-top: 0.5rem;
+        min-width: 10rem;
+        border-radius: 0.5rem;
+        backdrop-filter: blur(70px);
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        z-index: 50;
+      }
+
+      .dropdown-content a {
+        color: white;
+        padding: 0.5rem 1rem;
+        display: block;
+        text-decoration: none;
+      }
+
+      .dropdown-content a:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
     </style>
   </head>
-  <body class="flex flex-col items-center justify-center min-h-screen text-white">
 
-    <!-- Admin Login -->
-    <div id="loginSection" class="frosted p-8 rounded-lg shadow-lg w-full max-w-md">
-      <h1 class="text-3xl font-bold mb-4 text-center">Admin Login</h1>
-      <input type="password" id="adminPassword" placeholder="Enter Admin Password"
-             class="w-full p-3 mb-4 rounded bg-white bg-opacity-10 text-white placeholder-gray-300 focus:outline-none">
-      <button onclick="loginAdmin()" class="w-full bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded font-bold">Login</button>
-      <p id="loginError" class="text-red-400 mt-2 hidden text-center">Invalid Password</p>
-    </div>
+  <body class="flex flex-col items-center min-h-screen">
+    <!-- Navbar -->
+    <nav class="w-full px-6 py-2 flex justify-between items-center fixed top-0 frostednav shadow-md z-50">
+      <div class="flex items-center space-x-4">
+        <img src="https://i.ibb.co/F1CK3wq/logo.png" alt="Runes Logo" class="w-12 h-12 shadow-md" />
+        <span class="text-3xl text-white customfont">R U N E S</span>
+      </div>
+      <div class="dropdown relative">
+        <button class="text-white font-bold px-4 py-2 rounded focus:outline-none">
+          Admin ▾
+        </button>
+        <div class="dropdown-content">
+          <a href="/admin">Manage Questions</a>
+          <a href="/leaderboard">Leaderboard</a>
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+    </nav>
 
-    <!-- Admin Panel -->
-    <div id="adminSection" class="hidden w-full max-w-4xl mt-10 space-y-8">
-      <h1 class="text-4xl customfont text-center mb-6">Admin Panel - Manage Questions</h1>
+    <!-- Main Content -->
+    <div class="mt-28 w-full max-w-5xl p-8 frosted text-white">
+      <h2 class="text-2xl font-bold text-center mb-6">Admin Panel – Manage Questions</h2>
 
-      <!-- Add/Edit Form -->
-      <form id="questionForm" class="frosted p-6 rounded-lg shadow-lg space-y-4">
-        <h2 class="text-xl mb-2" id="formTitle">Add New Question</h2>
-        <input type="hidden" id="questionId">
-
-        <!-- Subject dropdown -->
-        <label class="block">Subject</label>
-        <select id="subject" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white focus:outline-none">
-          <option value="">Select subject</option>
-          <option value="phy">Physics</option>
-          <option value="chem">Chemistry</option>
-          <option value="maths">Maths</option>
-        </select>
-
-        <label class="block">Question</label>
-        <textarea id="question" placeholder="Enter question text" class="w-full p-2 rounded bg-white bg-opacity-10 text-white focus:outline-none" required></textarea>
-
-        <label class="block">Options</label>
-        <input type="text" id="option_a" placeholder="Option 1" class="w-full p-2 mb-2 rounded bg-white bg-opacity-10 text-white focus:outline-none" required>
-        <input type="text" id="option_b" placeholder="Option 2" class="w-full p-2 mb-2 rounded bg-white bg-opacity-10 text-white focus:outline-none" required>
-        <input type="text" id="option_c" placeholder="Option 3" class="w-full p-2 mb-2 rounded bg-white bg-opacity-10 text-white focus:outline-none" required>
-        <input type="text" id="option_d" placeholder="Option 4" class="w-full p-2 mb-2 rounded bg-white bg-opacity-10 text-white focus:outline-none" required>
-
-        <!-- Correct option dropdown -->
-        <label class="block">Correct Option</label>
-        <select id="correct_option" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white focus:outline-none">
-          <option value="">Select correct option</option>
-          <option value="1">Option 1</option>
-          <option value="2">Option 2</option>
-          <option value="3">Option 3</option>
-          <option value="4">Option 4</option>
-        </select>
-
-        <div class="flex space-x-2 pt-4">
-          <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 py-2 rounded font-bold">Save</button>
-          <button type="button" onclick="resetForm()" class="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded">Cancel</button>
+      <!-- Add Question Form -->
+      <form id="questionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <input type="hidden" id="questionId" />
+        <div>
+          <label>Subject</label>
+          <select id="sub" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white">
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Maths">Maths</option>
+          </select>
+        </div>
+        <div>
+          <label>Q.No</label>
+          <input type="number" id="qno" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white" />
+        </div>
+        <div class="md:col-span-2">
+          <label>Question</label>
+          <textarea id="question_text" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white"></textarea>
+        </div>
+        <div><label>A</label><input type="text" id="option_a" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white" /></div>
+        <div><label>B</label><input type="text" id="option_b" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white" /></div>
+        <div><label>C</label><input type="text" id="option_c" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white" /></div>
+        <div><label>D</label><input type="text" id="option_d" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white" /></div>
+        <div>
+          <label>Correct Option</label>
+          <select id="correct_option" required class="w-full p-2 rounded bg-white bg-opacity-10 text-white">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="w-full py-2 rounded bg-purple-600 hover:bg-purple-700 transition text-white font-bold">
+            Save Question
+          </button>
         </div>
       </form>
 
-      <!-- Questions list -->
-      <div class="frosted p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl mb-4">Existing Questions</h2>
-        <div id="questionsList" class="space-y-4"></div>
+      <!-- Questions Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-white">
+          <thead>
+            <tr class="bg-purple-700 bg-opacity-50">
+              <th class="p-2">ID</th>
+              <th class="p-2">Subject</th>
+              <th class="p-2">Q.No</th>
+              <th class="p-2">Question</th>
+              <th class="p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="questionsTable"></tbody>
+        </table>
       </div>
     </div>
 
     <script>
-      const ADMIN_PASSWORD = "runes123"; // 🔒 change this later
-
-      function loginAdmin() {
-        const entered = document.getElementById("adminPassword").value;
-        if (entered === ADMIN_PASSWORD) {
-          document.getElementById("loginSection").classList.add("hidden");
-          document.getElementById("adminSection").classList.remove("hidden");
-          fetchQuestions();
-        } else {
-          document.getElementById("loginError").classList.remove("hidden");
-        }
-      }
-
-      async function fetchQuestions() {
-        const res = await fetch("/api/questions");
+      async function loadQuestions() {
+        const res = await fetch('/api/questions');
         const questions = await res.json();
-        const container = document.getElementById("questionsList");
-        container.innerHTML = "";
+        const table = document.getElementById('questionsTable');
+        table.innerHTML = '';
         questions.forEach(q => {
-          const div = document.createElement("div");
-          div.className = "frosted p-4 rounded";
-          div.innerHTML = `
-            <p><b>${q.subject.toUpperCase()}</b>: ${q.question}</p>
-            <p>1) ${q.option_a}</p>
-            <p>2) ${q.option_b}</p>
-            <p>3) ${q.option_c}</p>
-            <p>4) ${q.option_d}</p>
-            <p><b>Correct:</b> ${q.correct_option}</p>
-            <div class="flex space-x-2 mt-2">
-              <button onclick="editQuestion(${q.id}, '${q.subject}', \`${q.question.replace(/`/g, "\\`")}\`, '${q.option_a.replace(/'/g, "\\'")}', '${q.option_b.replace(/'/g, "\\'")}', '${q.option_c.replace(/'/g, "\\'")}', '${q.option_d.replace(/'/g, "\\'")}', '${q.correct_option}')" class="flex-1 bg-yellow-500 px-3 py-1 rounded">Edit</button>
-              <button onclick="deleteQuestion(${q.id})" class="flex-1 bg-red-600 px-3 py-1 rounded">Delete</button>
-            </div>
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="p-2">${q.id}</td>
+            <td class="p-2">${q.sub}</td>
+            <td class="p-2">${q.qno}</td>
+            <td class="p-2">${q.question_text}</td>
+            <td class="p-2">
+              <button onclick="editQuestion(${q.id})" class="bg-blue-600 px-2 py-1 rounded">Edit</button>
+              <button onclick="deleteQuestion(${q.id})" class="bg-red-600 px-2 py-1 rounded">Delete</button>
+            </td>
           `;
-          container.appendChild(div);
+          table.appendChild(row);
         });
       }
 
-      document.getElementById("questionForm").addEventListener("submit", async (e) => {
+      async function editQuestion(id) {
+        const res = await fetch('/api/questions');
+        const questions = await res.json();
+        const q = questions.find(q => q.id === id);
+        if (!q) return;
+
+        document.getElementById('questionId').value = q.id;
+        document.getElementById('sub').value = q.sub;
+        document.getElementById('qno').value = q.qno;
+        document.getElementById('question_text').value = q.question_text;
+        document.getElementById('option_a').value = q.option_a;
+        document.getElementById('option_b').value = q.option_b;
+        document.getElementById('option_c').value = q.option_c;
+        document.getElementById('option_d').value = q.option_d;
+        document.getElementById('correct_option').value = q.correct_option;
+      }
+
+      async function deleteQuestion(id) {
+        if (!confirm('Are you sure you want to delete this question?')) return;
+        await fetch(`/api/questions/${id}`, { method: 'DELETE' });
+        loadQuestions();
+      }
+
+      document.getElementById('questionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = document.getElementById("questionId").value;
-        const body = {
-          subject: document.getElementById("subject").value,
-          question: document.getElementById("question").value,
-          option_a: document.getElementById("option_a").value,
-          option_b: document.getElementById("option_b").value,
-          option_c: document.getElementById("option_c").value,
-          option_d: document.getElementById("option_d").value,
-          correct_option: document.getElementById("correct_option").value
+        const id = document.getElementById('questionId').value;
+        const question = {
+          sub: document.getElementById('sub').value,
+          qno: document.getElementById('qno').value,
+          question_text: document.getElementById('question_text').value,
+          option_a: document.getElementById('option_a').value,
+          option_b: document.getElementById('option_b').value,
+          option_c: document.getElementById('option_c').value,
+          option_d: document.getElementById('option_d').value,
+          correct_option: document.getElementById('correct_option').value
         };
 
         if (id) {
           await fetch(`/api/questions/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(question)
           });
         } else {
-          await fetch("/api/questions", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
+          await fetch('/api/questions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(question)
           });
         }
-        resetForm();
-        fetchQuestions();
+
+        e.target.reset();
+        document.getElementById('questionId').value = '';
+        loadQuestions();
       });
 
-      function editQuestion(id, subject, question, a, b, c, d, correct) {
-        document.getElementById("formTitle").innerText = "Edit Question";
-        document.getElementById("questionId").value = id;
-        document.getElementById("subject").value = subject;
-        document.getElementById("question").value = question;
-        document.getElementById("option_a").value = a;
-        document.getElementById("option_b").value = b;
-        document.getElementById("option_c").value = c;
-        document.getElementById("option_d").value = d;
-        document.getElementById("correct_option").value = correct;
-      }
-
-      function resetForm() {
-        document.getElementById("formTitle").innerText = "Add New Question";
-        document.getElementById("questionId").value = "";
-        document.getElementById("questionForm").reset();
-      }
-
-      async function deleteQuestion(id) {
-        await fetch(`/api/questions/${id}`, { method: "DELETE" });
-        fetchQuestions();
-      }
+      loadQuestions();
     </script>
   </body>
 </html>
