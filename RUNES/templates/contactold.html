@@ -9,33 +9,37 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <style>
       @font-face {
-  font-family: 'norse';
-  src: url('/static/fonts/norse.otf') format('opentype');
-}
+        font-family: 'norse';
+        src: url('/static/fonts/norse.otf') format('opentype');
+      }
 
       body {
         background: linear-gradient(135deg, rgba(75, 0, 130, 0.8), rgba(0, 0, 255, 0.5));
         font-family: 'Quicksand', sans-serif;
         background-attachment: fixed;
-
       }
+
       .frosted {
         backdrop-filter: blur(70px);
         background: rgba(255, 255, 255, 0.1);
         border-radius: 15px;
         border: 1px solid rgba(255, 255, 255, 0.2);
       }
+
       .frosted2 {
         backdrop-filter: blur(70px);
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
       }
-      .frosted3{  
+
+      .frosted3 {
         height: 15%;
       }
+
       .score {
         animation: roll 0.25s ease-in;
       }
+
       .logo {
         background-image: url('https://i.ibb.co/F1CK3wq/logo.png');
         background-size: cover;
@@ -44,16 +48,20 @@
         border-radius: 50%;
         margin: 0 auto;
       }
+
       .customfont {
         font-family: 'norse', sans-serif;
       }
+
       .quicksand {
         font-family: 'Quicksand', sans-serif;
       }
+
       @keyframes roll {
         0% {
           transform: translateY(-7px);
         }
+
         100% {
           transform: translateY(0px);
         }
@@ -64,27 +72,16 @@
     <div>
       <!-- Sidebar -->
       <aside id="sidebar" class="w-60 frosted2 bg-slate-700 border-4 border-solid shadow-lg h-screen fixed left-0 top-0 z-50">
-        
-
-        <div class="grid grid-cols-5 p-1 p-3 frosted3 border-solid border-b-2 w-full">
+        <div class="grid grid-cols-5 p-1 frosted3 border-solid border-b-2 w-full">
           <div class="logo col-span-2 p-3"></div>
-          <div class="text-3xl text-white align-middle col-span-3 pt-5 pl-5 customfont ">R U N E S</div>
+          <div class="text-3xl text-white align-middle col-span-3 pt-5 pl-5 customfont">R U N E S</div>
         </div>
-
-
-
-
-
-
-
         <nav class="mt-4">
           <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
           <a href="/about" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
           <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
           <a href="/leaderboard" class="block py-3 px-6 text-white hover:underline quicksand">Leaderboard</a>
           <a href="/contact" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
-          
-
           <a href="/logout" class="block py-3 border-t-2 fixed w-full bottom-0 px-6 text-white hover:underline quicksand">logout</a>
         </nav>
       </aside>
@@ -93,75 +90,69 @@
         <!-- Navbar -->
         <nav class="frosted2 bg-slate-700 shadow-lg w-full fixed top-0 left-60 z-40" style="margin-left:0; width:calc(100% - 15rem);">
           <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <button id="sidebar-btn" class="text-white md:hidden focus:outline-none">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-            <button id="menu-btn" class="block md:hidden text-white focus:outline-none">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
             <div id="menu" class="hidden md:flex space-x-6 items-center">
-          <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
-          <a href="/about" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
-          <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
-          <a href="/leaderboard" class="block py-3 px-6 text-white hover:underline quicksand">Leaderboard</a>
-          <a href="/contact" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
-          
+              <a href="/" class="block py-3 px-6 text-white hover:underline quicksand">Home</a>
+              <a href="/about" class="block py-3 px-6 text-white hover:underline quicksand">About</a>
+              <a href="/trivia_start" class="block py-3 px-6 text-white hover:underline quicksand">Trivia</a>
+              <a href="/leaderboard" class="block py-3 px-6 text-white hover:underline quicksand">Leaderboard</a>
+              <a href="/contact" class="block py-3 px-6 text-white hover:underline quicksand">Contact</a>
             </div>
           </div>
         </nav>
 
-      
+        <!-- Contact Form -->
+        <!-- inside your existing HTML, replace just this form and script section -->
+<div class="flex-1 flex items-center justify-center" style="margin-top:1rem;">
+  <div class="frosted bg-white bg-opacity-20 p-8 rounded-lg shadow-lg w-full max-w-md mt-32">
+    <h1 class="text-4xl text-center text-white mb-6 customfont">C o n t a c t . U s</h1>
+    
+    <!-- Thank You message (initially hidden) -->
+    <div id="thank-you" class="hidden text-center text-white text-xl mb-4">Thank you for your message!</div>
 
-
-
-<!-- Leaderboard Section -->
-  <div class="pt-24 max-w  px-4">
-    <div class="frosted p-6 shadow-lg">
-      <h1 class="text-3xl font-bold text-center mb-6 text-white">🏆 Leaderboard</h1>
-      <div class="overflow-x-auto rounded-lg">
-        <table class="w-full text-left border-collapse text-white">
-          <thead class="bg-purple-700 bg-opacity-30">
-            <tr>
-              <th class="p-4">S. No</th>
-              <th class="p-4">Username</th>
-              <th class="p-4">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for user in data %}
-            <tr class="border-b border-white border-opacity-10 hover:bg-white hover:bg-opacity-10 transition">
-              <td class="p-4">{{ loop.index }}</td>
-              <td class="p-4">{{ user.username }}</td>
-              <td class="p-4">{{ '%.2f' % user.score }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+    <form id="contact-form" class="space-y-4">
+      <div>
+        <label for="name" class="block text-white">Name:</label>
+        <input type="text" id="name" name="name" required class="w-full p-2 rounded bg-gray-900 bg-opacity-40 border border-gray-900">
       </div>
-    </div>
+      <div>
+        <label for="email" class="block text-white">Email:</label>
+        <input type="email" id="email" name="email" required class="w-full p-2 rounded bg-gray-900 bg-opacity-40 border border-gray-900">
+      </div>
+      <div>
+        <label for="message" class="block text-white">Message:</label>
+        <textarea id="message" name="message" rows="4" required class="w-full p-2 rounded bg-gray-900 bg-opacity-40 border border-gray-900"></textarea>
+      </div>
+      <button type="submit" class="w-full bg-black border border-gray-900 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
+        Send Message
+      </button>
+    </form>
   </div>
+</div>
 
+<!-- JavaScript -->
+<script>
+  document.getElementById('contact-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
 
+    const response = await fetch('https://formspree.io/f/xdkzbayd', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
 
-
-
-
-
-
-
-    </div>
-
+    if (response.ok) {
+      form.classList.add('hidden');
+      document.getElementById('thank-you').classList.remove('hidden');
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 3000); // 3 seconds delay
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  });
+</script>
 
   </body>
 </html>
-
-
-
-
-
-
-

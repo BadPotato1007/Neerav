@@ -381,5 +381,122 @@ def trivia():
     print(f"Subject received: {subject}")
     return render_template('trivia.html', subject=subject)
 
+
+
+
+
+
+
+
+# ===============================
+# ✅ ADMIN PAGE + QUESTION CRUD
+# ===============================
+
+@app.route('/admin')
+def admin_page():
+    username = request.cookies.get('username')
+    # You can add proper admin authentication here later
+    return render_template('admin.html')
+
+@app.route("/api/questions", methods=["GET"])
+def get_questions():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM questions")
+        questions = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(questions)
+    except mysql.connector.Error as e:
+        print("[ERROR] Failed to fetch questions:", e)
+        return jsonify({"error": "Database error"}), 500
+
+@app.route("/api/questions", methods=["POST"])
+def add_question():
+    data = request.get_json()
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        query = """
+            INSERT INTO questions (sub, qno, question_text, option_a, option_b, option_c, option_d, correct_option)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (
+            data["sub"],
+            data["qno"],
+            data["question_text"],
+            data["option_a"],
+            data["option_b"],
+            data["option_c"],
+            data["option_d"],
+            data["correct_option"]
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"message": "Question added successfully!"})
+    except mysql.connector.Error as e:
+        print("[ERROR] Failed to add question:", e)
+        return jsonify({"error": "Database error"}), 500
+
+@app.route("/api/questions/<int:id>", methods=["PUT"])
+def edit_question(id):
+    data = request.get_json()
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        query = """
+            UPDATE questions
+            SET sub=%s, qno=%s, question_text=%s,
+                option_a=%s, option_b=%s, option_c=%s, option_d=%s, correct_option=%s
+            WHERE id=%s
+        """
+        cursor.execute(query, (
+            data["sub"],
+            data["qno"],
+            data["question_text"],
+            data["option_a"],
+            data["option_b"],
+            data["option_c"],
+            data["option_d"],
+            data["correct_option"],
+            id
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"message": "Question updated successfully!"})
+    except mysql.connector.Error as e:
+        print("[ERROR] Failed to update question:", e)
+        return jsonify({"error": "Database error"}), 500
+
+@app.route("/api/questions/<int:id>", methods=["DELETE"])
+def delete_question(id):
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM questions WHERE id=%s", (id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"message": "Question deleted successfully!"})
+    except mysql.connector.Error as e:
+        print("[ERROR] Failed to delete question:", e)
+        return jsonify({"error": "Database error"}), 500
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
