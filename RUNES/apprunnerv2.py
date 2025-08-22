@@ -286,7 +286,7 @@ def submit_answer():
 
     qno = data.get("qno")
     subject = data.get("subject")
-    correct = data.get("correct")  # true/false/null
+    correct = data.get("correct")
 
     if not qno or not subject:
         return jsonify({'status': 'error', 'message': 'Missing qno or subject'}), 400
@@ -294,9 +294,9 @@ def submit_answer():
     subject_column = f"{subject}_attempted"
     update_fields = ["totalq = totalq + 1"]
 
-    if correct is True:
+    if correct == "True":
         update_fields.append("correctq = correctq + 1")
-    elif correct is False:
+    elif correct == "False":
         update_fields.append("wrongq = wrongq + 1")
 
     update_fields.append(f"{subject_column} = {subject_column} + 1")
@@ -314,6 +314,12 @@ def submit_answer():
     except mysql.connector.Error as e:
         print("[ERROR] Failed to update userdata:", e)
         return jsonify({'status': 'error', 'message': 'Database error'}), 500
+
+
+
+
+
+
 
 @app.route('/api/next-question', methods=['GET'])
 def next_question():

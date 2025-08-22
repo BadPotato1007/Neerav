@@ -131,16 +131,62 @@
                 for (const otherId in options) {
                   document.getElementById(otherId).disabled = true;
                 }
+                
+
+
+
+
 
                 // Check if correct
                 if (value === window.correctAnswer) {
                   button.style.backgroundColor = "green";
+
+                  const payload = {
+                  qno: number,
+                  subject: subject,
+                  correct: "True"
+                };
+                fetch("/api/submit-answer", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                  console.log("Answer submitted:", data);
+                })
+                .catch(err => {
+                  console.error("Error submitting answer:", err);
+                });
+
                 } else {
                   button.style.backgroundColor = "red";
                   // Also highlight the correct answer in green
-                  for (const [correctId, correctValue] of Object.entries(options)) {
-                    if (correctValue === window.correctAnswer) {
-                      document.getElementById(correctId).style.backgroundColor = "green";
+                  const payload = {
+                    qno: number,
+                    subject: subject,
+                    correct: "False"
+                  };
+                  fetch("/api/submit-answer", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                  })
+                  .then(res => res.json())
+                  .then(data => {
+                    console.log("Answer submitted:", data);
+                  })
+                  .catch(err => {
+                    console.error("Error submitting answer:", err);
+                  });
+
+                  for (const [id, value] of Object.entries(options)) {
+                    if (value === window.correctAnswer) {
+                      document.getElementById(id).style.backgroundColor = "green";
                     }
                   }
                 }
