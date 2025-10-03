@@ -7,9 +7,9 @@ app = Flask(__name__)
 
 # Configure MySQL connection
 db_config = {
-    'user': 'runes',
-    'password': 'root',
-    'host': '192.168.100.133',
+    'user': 'root',
+    'password': 'deens',
+    'host': 'localhost',
     'database': 'runes'
 }
 
@@ -45,7 +45,7 @@ def home():
     username = request.cookies.get('username')
     if username:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(dictionary=True, buffered=True)
 
         # Fetch correctq, totalq, and subject attempts
         cursor.execute("""
@@ -107,7 +107,7 @@ def signup():
 
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
         cursor.execute("INSERT INTO userdata (username, email, pass) VALUES (%s, %s, %s)", (username, email, pass1))
         conn.commit()
         cursor.close()
@@ -126,7 +126,7 @@ def login():
         return jsonify({'error': 'Missing username or password'}), 400
 
     conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor()
+    cursor = conn.cursor(buffered=True)
     cursor.execute("SELECT pass FROM userdata WHERE username = %s", (username,))
     result = cursor.fetchone()
     cursor.close()
@@ -145,7 +145,7 @@ def trivia_start():
         return redirect(url_for('login_page'))
 
     conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     cursor.execute("SELECT username, correctq AS C, totalq AS T FROM userdata WHERE username = %s", (username,))
     userdata = cursor.fetchone()
@@ -180,7 +180,7 @@ def profile():
         return jsonify({'error': 'Not logged in'}), 401
 
     conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor()
+    cursor = conn.cursor(buffered=True)
     cursor.execute("SELECT username FROM userdata WHERE username = %s", (username,))
     user = cursor.fetchone()
     cursor.close()
@@ -202,7 +202,7 @@ def register():
 
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
         cursor.execute("INSERT INTO userdata (username, email, pass) VALUES (%s, %s, %s)", (username, email, password))
         conn.commit()
         cursor.close()
@@ -213,7 +213,7 @@ def register():
 
 def get_user_attempt_number(username, sub):
     connection = mysql.connector.connect(**db_config)
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor(dictionary=True, buffered=True)
 
     column_name = f"{sub.lower()}_attempted"
     print(f"[DEBUG] Fetching attempt number for user '{username}' and subject '{sub}' using column '{column_name}'")
@@ -235,7 +235,7 @@ def get_user_attempt_number(username, sub):
 
 def get_next_question(subject, username):
     connection = mysql.connector.connect(**db_config)
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor(dictionary=True, buffered=True)
     if subject == "phy":
         cursor.execute("SELECT phy_attempted FROM userdata WHERE username = %s", (username,))
         db_subject = "Physics"
@@ -305,7 +305,7 @@ def submit_answer():
 
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
         cursor.execute(update_query, (username,))
         conn.commit()
         cursor.close()
@@ -351,7 +351,7 @@ def next_question():
 @app.route('/leaderboard')
 def leaderboard():
     conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True)
 
     cursor.execute("SELECT username, correctq AS C, totalq AS T FROM userdata")
     users = cursor.fetchall()
@@ -402,7 +402,7 @@ def admin_page():
 def get_questions():
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(dictionary=True, buffered=True)
         cursor.execute("SELECT * FROM questions")
         questions = cursor.fetchall()
         cursor.close()
@@ -417,7 +417,7 @@ def add_question():
     data = request.get_json()
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
         query = """
             INSERT INTO questions (sub, qno, question_text, option_a, option_b, option_c, option_d, correct_option)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -445,7 +445,7 @@ def edit_question(id):
     data = request.get_json()
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
         query = """
             UPDATE questions
             SET sub=%s, qno=%s, question_text=%s,
@@ -475,7 +475,7 @@ def edit_question(id):
 def delete_question(id):
     try:
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
         cursor.execute("DELETE FROM questions WHERE id=%s", (id,))
         conn.commit()
         cursor.close()
@@ -484,15 +484,6 @@ def delete_question(id):
     except mysql.connector.Error as e:
         print("[ERROR] Failed to delete question:", e)
         return jsonify({"error": "Database error"}), 500
-
-
-
-
-
-
-
-
-
 
 
 
